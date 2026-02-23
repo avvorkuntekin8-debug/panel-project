@@ -16,6 +16,16 @@ class User(UserMixin, db.Model):
     hourly_limit = db.Column(db.Integer, default=20)
     premium_until = db.Column(db.DateTime, nullable=True)
     plan = db.Column(db.String(50), default="free")
+    
+    from datetime import datetime
+
+class QueryLog(db.Model):
+    __tablename__ = "query_log"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    query_type = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 # ---------------- PRODUCT ----------------
