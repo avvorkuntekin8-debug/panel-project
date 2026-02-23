@@ -120,6 +120,28 @@ def login():
         return render_template("login.html", error="Hatalı giriş")
 
     return render_template("login.html")
+    
+ @app.route("/admin-dashboard")
+@login_required
+def admin_dashboard():
+
+    if current_user.role != "admin":
+        return redirect("/dashboard")
+
+    users = User.query.all()
+
+    total_users = User.query.count()
+
+    total_queries = db.session.execute(text("""
+        SELECT COUNT(*) FROM query_log
+    """)).scalar() or 0
+
+    return render_template(
+        "admin_dashboard.html",
+        users=users,
+        total_users=total_users,
+        total_queries=total_queries
+    )   
 
 # =========================================================
 # REGISTER (BOT DOĞRULAMALI)
