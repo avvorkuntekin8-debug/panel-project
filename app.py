@@ -27,6 +27,11 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+    
+from models import QueryLog
+
+with app.app_context():
+    db.create_all()    
 
 # =========================================================
 # INIT DB ROUTE
@@ -34,6 +39,7 @@ with app.app_context():
 
 @app.route("/init-db")
 def init_db():
+    from models import User, QueryLog
     db.create_all()
     return "Database initialized"
 
