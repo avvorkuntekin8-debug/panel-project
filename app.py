@@ -254,6 +254,26 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+@app.route("/create-admin")
+def create_admin():
+
+    existing = User.query.filter_by(username="admin").first()
+    if existing:
+        return "Admin already exists"
+
+    user = User(
+        username="admin",
+        password="1234",
+        role="admin",
+        daily_limit=99999,
+        hourly_limit=9999
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    return "Admin created"
+
 # =========================================================
 # RUN
 # =========================================================
