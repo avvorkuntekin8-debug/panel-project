@@ -13,13 +13,10 @@ import os
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "super_ultra_secret_key_2026"
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database.db")
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + DB_PATH
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "fallback")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SESSION_COOKIE_SECURE"] = False
 
 db.init_app(app)
 
@@ -101,11 +98,7 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
-        
-        print("LOGIN DENENDİ:", username)
-        print("USER BULUNDU:", user)
 
         username = request.form.get("username")
         password = request.form.get("password")
@@ -116,13 +109,13 @@ def login():
             login_user(user)
 
             if user.role == "admin":
-                return redirect("/admin-dashboard")
+                return redirect(url_for("admin_dashboard"))
 
-            return redirect("/dashboard")
+            return redirect(url_for("dashboard"))
 
         return render_template("login.html", error="Hatalı giriş")
 
-    return render_template("login.html")
+    return render_template("login.html"))
     
     
 
@@ -189,8 +182,8 @@ def telegram_verified(username):
 @login_required
 def admin_dashboard():
 
-    if current_user.role != "admin":
-        return redirect("/dashboard")
+    if user.role == "admin":
+         return redirect(url_for("admin_dashboard")))
 
     users = User.query.all()
 
