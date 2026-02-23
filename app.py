@@ -103,6 +103,9 @@ def home():
 def login():
 
     if request.method == "POST":
+        
+        print("LOGIN DENENDİ:", username)
+        print("USER BULUNDU:", user)
 
         username = request.form.get("username")
         password = request.form.get("password")
