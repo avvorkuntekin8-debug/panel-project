@@ -2,12 +2,37 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Dashboard</title>
+<title>Panel</title>
 <style>
+
 body{
+    margin:0;
     font-family:Arial;
     background:#0b1220;
     color:white;
+}
+
+.sidebar{
+    width:220px;
+    height:100vh;
+    background:#111827;
+    position:fixed;
+    padding:20px;
+}
+
+.sidebar h2{
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin-bottom:15px;
+}
+
+.main{
+    margin-left:240px;
     padding:40px;
 }
 
@@ -31,24 +56,73 @@ body{
     text-align:center;
     font-size:12px;
 }
-button{
-    padding:10px 20px;
+
+input{
+    padding:8px;
+    border-radius:8px;
     border:none;
-    border-radius:20px;
+}
+
+button{
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
     background:#00f2ff;
     font-weight:bold;
     cursor:pointer;
 }
+
+pre{
+    background:#0f172a;
+    padding:15px;
+    border-radius:10px;
+    overflow:auto;
+}
+
 </style>
 </head>
 <body>
-<div class="card">
-    <h3>Sorgu Portalı</h3>
 
-    <input type="text" id="searchInput" placeholder="Kullanıcı adı gir">
-    <button onclick="runSearch()">Ara</button>
+<div class="sidebar">
+    <h2>Cyber Panel</h2>
 
-    <pre id="resultBox"></pre>
+    <a href="#">Dashboard</a>
+    <a href="#">Sorgu</a>
+    <a href="/premium">Premium</a>
+    <a href="/logout">Çıkış</a>
+</div>
+
+<div class="main">
+
+    <h1>Hoşgeldin {{ user.username }}</h1>
+
+    <div class="card">
+        <h3>Rol: {{ user.role|upper }}</h3>
+        {% if remaining_days > 0 %}
+            <p>Kalan Premium Gün: {{ remaining_days }}</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3>Günlük Kullanım</h3>
+        <p>{{ today_count }} / {{ daily_limit }}</p>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: {{ percent }}%;">
+                {{ percent }}%
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Sorgu Portalı</h3>
+
+        <input type="text" id="searchInput" placeholder="Kullanıcı adı gir">
+        <button onclick="runSearch()">Ara</button>
+
+        <pre id="resultBox"></pre>
+    </div>
+
 </div>
 
 <script>
@@ -68,41 +142,11 @@ function runSearch() {
             document.getElementById("resultBox").innerText =
                 JSON.stringify(data.results, null, 2);
         })
-        .catch(err => {
+        .catch(() => {
             document.getElementById("resultBox").innerText = "Hata oluştu";
         });
 }
 </script>
-
-<h1>Hoşgeldin {{ user.username }}</h1>
-
-<div class="card">
-    <h3>Rol: {{ user.role }}</h3>
-</div>
-
-<div class="card">
-    <h3>Günlük Kullanım</h3>
-    <p>{{ today_count }} / {{ daily_limit }}</p>
-
-    <div class="progress">
-        <div class="progress-bar" style="width: {{ percent }}%;">
-            {{ percent }}%
-        </div>
-    </div>
-</div>
-
-<div class="card">
-    <a href="/premium">
-        <button>Premium</button>
-    </a>
-	
-	
-
-    <a href="/logout">
-        <button style="background:red;">Çıkış</button>
-    </a>
-</div>
-
 
 </body>
 </html>
