@@ -13,6 +13,11 @@ import os
 
 app = Flask(__name__)
 
+# 🔥 DATABASE CONFIG (EKLENDİ - EN ÖNEMLİ KISIM)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# SESSION CONFIG
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "super-secret-key")
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_SAMESITE'] = "Lax"
@@ -22,11 +27,15 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    
+
+# =========================================================
+# INIT DB ROUTE
+# =========================================================
+
 @app.route("/init-db")
 def init_db():
     db.create_all()
-    return "Database initialized"     
+    return "Database initialized"
 
 # =========================================================
 # LOGIN MANAGER
@@ -35,55 +44,6 @@ def init_db():
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-
-# =========================================================
-# TELEGRAM ADMIN MESAJ
-# =========================================================
-
-def send_admin_message(user_id, username, plan):
-
-    bot_token = "8596108342:AAGZaHxY0iIPE-U4jitnNk3Lipjj4Qpm_CM"
-    admin_id = "7595556701"
-
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-
-    keyboard = {
-        "inline_keyboard": [[
-            {"text": "✅ Onayla", "callback_data": f"approve_{user_id}_{plan}"},
-            {"text": "❌ Reddet", "callback_data": f"reject_{user_id}_{plan}"}
-        ]]
-    }
-
-    requests.post(url, json={
-        "chat_id": admin_id,
-        "text": f"""
-💎 Premium Talebi
-
-Kullanıcı: {username}
-User ID: {user_id}
-Plan: {plan}
-""",
-        "reply_markup": keyboard
-    })
-
-# =========================================================
-# PREMIUM EXPIRE CHECK
-# =========================================================
-
-@app.before_request
-def check_premium_expiry():
-    if current_user.is_authenticated:
-        if current_user.role == "premium" and current_user.premium_until:
-            if datetime.now() > current_user.premium_until:
-                current_user.role = "user"
-                current_user.daily_limit = 50
-                current_user.hourly_limit = 20
-                current_user.premium_until = None
-                db.session.commit()
-
-# =========================================================
-# USER LOADER
-# =========================================================
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -96,8 +56,7 @@ def load_user(user_id):
 @app.route("/")
 def home():
     return redirect(url_for("login"))
-    
- 
+
 # =========================================================
 # LOGIN
 # =========================================================
@@ -115,10 +74,6 @@ def login():
         if user and user.password == password:
             login_user(user, remember=True)
 
-            next_page = request.args.get("next")
-            if next_page:
-                return redirect(next_page)
-
             if user.role == "admin":
                 return redirect(url_for("admin_dashboard"))
 
@@ -127,11 +82,9 @@ def login():
         return render_template("login.html", error="Hatalı giriş")
 
     return render_template("login.html")
-    
-    
 
 # =========================================================
-# REGISTER (BOT DOĞRULAMALI)
+# REGISTER
 # =========================================================
 
 @app.route("/register", methods=["GET", "POST"])
@@ -147,9 +100,6 @@ def register():
 
         if not username or not password or not telegram_clean:
             return render_template("register.html", error="Tüm alanları doldurun")
-
-        if not telegram_verified(telegram_clean):
-            return render_template("register.html", error="Telegram botunu başlatmalısınız")
 
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
@@ -171,33 +121,17 @@ def register():
     return render_template("register.html")
 
 # =========================================================
-# TELEGRAM VERIFY
+# ADMIN DASHBOARD
 # =========================================================
 
-def telegram_verified(username):
-
-    username = username.strip().replace("@", "").lower()
-
-    try:
-        with open("telegram_users.json", "r") as f:
-            for line in f:
-                data = json.loads(line.strip())
-                if (data.get("username") or "").lower() == username:
-                    return True
-    except:
-        pass
-
-    return False
-    
 @app.route("/admin-dashboard")
 @login_required
 def admin_dashboard():
 
-    if user.role == "admin":
-         return redirect(url_for("admin_dashboard"))
+    if current_user.role != "admin":
+        return redirect(url_for("dashboard"))
 
     users = User.query.all()
-
     total_users = User.query.count()
 
     total_queries = db.session.execute(text("""
@@ -209,17 +143,15 @@ def admin_dashboard():
         users=users,
         total_users=total_users,
         total_queries=total_queries
-    )    
+    )
 
 # =========================================================
-# DASHBOARD
+# USER DASHBOARD
 # =========================================================
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    
-    print("CURRENT USER:", current_user.is_authenticated)
 
     today = datetime.now().date()
 
@@ -236,45 +168,12 @@ def dashboard():
     daily_limit = current_user.daily_limit or 1
     percent = int((today_count / daily_limit) * 100)
 
-    total_queries = db.session.execute(text("""
-        SELECT COUNT(*)
-        FROM query_log
-        WHERE user_id = :uid
-    """), {"uid": current_user.id}).scalar() or 0
-
-    labels = []
-    data = []
-
-    for i in range(6, -1, -1):
-        day = today - timedelta(days=i)
-
-        count = db.session.execute(text("""
-            SELECT COUNT(*)
-            FROM query_log
-            WHERE user_id = :uid
-            AND DATE(created_at) = :day
-        """), {
-            "uid": current_user.id,
-            "day": day
-        }).scalar() or 0
-
-        labels.append(day.strftime("%d.%m"))
-        data.append(count)
-
-    remaining_days = 0
-    if current_user.premium_until:
-        remaining_days = (current_user.premium_until - datetime.now()).days
-
     return render_template(
         "dashboard.html",
         user=current_user,
         today_count=today_count,
         daily_limit=daily_limit,
-        percent=percent,
-        total_queries=total_queries,
-        remaining_days=remaining_days,
-        chart_labels=labels,
-        chart_data=data
+        percent=percent
     )
 
 # =========================================================
@@ -286,6 +185,10 @@ def dashboard():
 def logout():
     logout_user()
     return redirect(url_for("login"))
+
+# =========================================================
+# CREATE ADMIN
+# =========================================================
 
 @app.route("/create-admin")
 def create_admin():
