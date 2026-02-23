@@ -2,10 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Kullanıcı Paneli</title>
+<title>Dashboard</title>
 <style>
 body{
-    font-family: Arial;
+    font-family:Arial;
     background:#0b1220;
     color:white;
     padding:40px;
@@ -31,7 +31,6 @@ body{
     text-align:center;
     font-size:12px;
 }
-
 button{
     padding:10px 20px;
     border:none;
@@ -40,11 +39,6 @@ button{
     font-weight:bold;
     cursor:pointer;
 }
-
-a{
-    color:white;
-    text-decoration:none;
-}
 </style>
 </head>
 <body>
@@ -52,11 +46,7 @@ a{
 <h1>Hoşgeldin {{ user.username }}</h1>
 
 <div class="card">
-    <h3>Rol: {{ user.role|upper }}</h3>
-
-    {% if remaining_days > 0 %}
-        <p>Premium Kalan Gün: {{ remaining_days }}</p>
-    {% endif %}
+    <h3>Rol: {{ user.role }}</h3>
 </div>
 
 <div class="card">
@@ -72,11 +62,11 @@ a{
 
 <div class="card">
     <a href="/premium">
-        <button>Premium Satın Al</button>
+        <button>Premium</button>
     </a>
 
     <a href="/logout">
-        <button style="background:red;">Çıkış Yap</button>
+        <button style="background:red;">Çıkış</button>
     </a>
 </div>
 
