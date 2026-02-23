@@ -186,7 +186,7 @@ def telegram_verified(username):
 def admin_dashboard():
 
     if user.role == "admin":
-         return redirect(url_for("admin_dashboard")))
+         return redirect(url_for("admin_dashboard"))
 
     users = User.query.all()
 
