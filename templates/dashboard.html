@@ -64,11 +64,43 @@ button{
     <a href="/premium">
         <button>Premium</button>
     </a>
+	
+	
 
     <a href="/logout">
         <button style="background:red;">Çıkış</button>
     </a>
 </div>
+<div class="card">
+    <h3>Sorgu Portalı</h3>
+
+    <input type="text" id="searchInput" placeholder="TC / GSM girin">
+    <button onclick="runSearch()">Ara</button>
+
+    <pre id="resultBox"></pre>
+</div>
+
+<script>
+function runSearch() {
+    const value = document.getElementById("searchInput").value;
+
+    fetch("/search?type=tc&q=" + value)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Hata oluştu");
+            }
+            return res.json();
+        })
+        .then(data => {
+            document.getElementById("resultBox").innerText =
+                JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            document.getElementById("resultBox").innerText =
+                "Hata: " + err.message;
+        });
+}
+</script>
 
 </body>
 </html>

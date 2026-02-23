@@ -207,6 +207,29 @@ def dashboard():
         chart_labels=labels,
         chart_data=data
     )
+    
+@app.route("/search-user")
+@login_required
+def search_user():
+
+    keyword = request.args.get("q", "").strip()
+
+    if not keyword:
+        return {"results": []}
+
+    users = User.query.filter(
+        User.username.ilike(f"%{keyword}%")
+    ).all()
+
+    return {
+        "results": [
+            {
+                "id": u.id,
+                "username": u.username,
+                "role": u.role
+            } for u in users
+        ]
+    }    
 
 # =========================================================
 # LOGOUT
