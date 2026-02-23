@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>IBAN Ödeme</title>
+<style>
+body{
+    background:#0b1220;
+    font-family:Inter;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.card{
+    background:#111827;
+    padding:40px;
+    border-radius:20px;
+    width:500px;
+    text-align:center;
+}
+.iban-box{
+    background:#1f2937;
+    padding:15px;
+    border-radius:10px;
+    margin:20px 0;
+    font-size:18px;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border-radius:10px;
+    border:none;
+    background:#1f2937;
+    color:white;
+}
+button{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#3b82f6;
+    font-weight:bold;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>IBAN Ödeme</h2>
+    <div>Plan: {{ plan|capitalize }}</div>
+	<h2>İsim Soyisim Yazmayı Unutmayın</h2>
+
+    <div class="iban-box">
+        {{ iban }}
+    </div>
+
+
+    <form method="POST" action="/submit-payment">
+        <input type="hidden" name="plan" value="{{ plan }}">
+        <input type="hidden" name="method" value="iban">
+
+        <input type="text" name="reference" placeholder="Dekont Açıklaması" required>
+        <button type="submit">Ödeme Bildir</button>
+    </form>
+</div>
+
+</body>
+</html>

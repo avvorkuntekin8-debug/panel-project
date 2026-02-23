@@ -1,0 +1,3 @@
+UPDATE user SET daily_limit = 200 WHERE username = 'orkun';
+UPDATE user SET daily_limit = 1000 WHERE role = 'premium';
+UPDATE user SET daily_limit = 999999 WHERE role = 'admin';

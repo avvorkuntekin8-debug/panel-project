@@ -1,0 +1,285 @@
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f3f4f6;
+}
+
+/* ÜST BAR */
+.top-bar {
+    background:#111;
+    color:white;
+    padding:10px 40px;
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+}
+
+/* HEADER */
+.market-header {
+    background:white;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.market-logo {
+    height:50px;
+}
+
+/* ANA CONTAINER */
+.market-container {
+    max-width:1200px;
+    margin:40px auto;
+    display:flex;
+    gap:40px;
+}
+
+/* GALERİ */
+.product-gallery {
+    flex:2;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.05);
+}
+
+.product-gallery img {
+    width:100%;
+    border-radius:10px;
+}
+
+.no-image {
+    height:300px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e5e7eb;
+    border-radius:10px;
+}
+
+/* SATIN ALMA PANELİ */
+.buy-box {
+    flex:1;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(0,0,0,0.1);
+}
+
+.buy-box h2 {
+    margin-top:0;
+}
+
+.price {
+    font-size:28px;
+    font-weight:bold;
+    margin:20px 0;
+}
+
+.buy-btn {
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    color:white;
+    transition:0.3s;
+}
+
+/* ALT AÇIKLAMA */
+.description-box {
+    max-width:1200px;
+    margin:0 auto 60px;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.05);
+}
+
+/* =====================
+   TEMA RENKLERİ
+===================== */
+
+.theme-sahibinden .buy-btn {
+    background:#ffff000;
+    color:yellow;
+}
+
+.theme-trendyol .buy-btn {
+    background:#ff6000;
+}
+
+.theme-amazon .buy-btn {
+    background:#ff9900;
+}
+
+.theme-hepsiburada .buy-btn {
+    background:#ff6000;
+}
+
+.theme-letgo .buy-btn {
+    background:#5f00ff;
+}
+.iban-box {
+    margin-top:20px;
+    padding:15px;
+    background:#f9fafb;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+}
+
+.iban-number {
+    background:white;
+    padding:10px;
+    border-radius:6px;
+    font-weight:bold;
+    margin:10px 0;
+    letter-spacing:1px;
+    border:1px solid #ddd;
+}
+
+.copy-iban-btn {
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#111;
+    color:white;
+    transition:0.3s;
+}
+
+.copy-iban-btn:hover {
+    opacity:0.8;
+}
+.bank-card {
+    margin-top:25px;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 0 25px rgba(0,255,255,0.25);
+    color:white;
+}
+
+.bank-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.bank-title {
+    font-weight:bold;
+    font-size:14px;
+    color:#00ffff;
+}
+
+.bank-body {
+    background:#0b1220;
+    padding:15px;
+    border-radius:10px;
+}
+
+.bank-row {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+    font-size:14px;
+}
+
+.bank-row span {
+    opacity:0.6;
+}
+
+.bank-warning {
+    background:#111827;
+    padding:10px;
+    border-radius:8px;
+    font-size:12px;
+    margin:10px 0;
+    border-left:3px solid #00ffff;
+}
+
+.bank-copy-btn {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#00bfff,#0066ff);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.bank-copy-btn:hover {
+    transform:scale(1.02);
+    box-shadow:0 0 20px rgba(0,255,255,0.6);
+}
+/* SAHİBİNDEN */
+body.sahibinden {
+    background:#f5f5f5;
+}
+body.sahibinden .header {
+    background:#ffd200;
+
+
+
+
+/* PTTAVM */
+body.pttavm {
+    background:#f5f5f5;
+}
+body.pttavm .header {
+    background:#ffd200;
+}
+
+/* TRENDYOL */
+body.trendyol {
+    background:#fff5f0;
+}
+body.trendyol .header {
+    background:#ff6000;
+    color:white;
+}
+
+/* AMAZON */
+body.amazon {
+    background:#f3f3f3;
+}
+body.amazon .header {
+    background:#131921;
+    color:white;
+}
+
+/* HEPSIBURADA */
+body.hepsiburada {
+    background:#fff;
+}
+body.hepsiburada .header {
+    background:#ff6000;
+    color:white;
+}
+
+/* LETGO */
+body.letgo {
+    background:#fafafa;
+}
+body.letgo .header {
+    background:#a100ff;
+    color:white;
+}
+body.pttavm { ... }
+body.trendyol { ... }
+body.amazon { ... }
+body.hepsiburada { ... }
+body.letgo { ... }
+
+.countdown {
+   background:#fee2e2;
+   color:#b91c1c;
+   padding:10px 20px;
+   border-radius:12px;
+   display:inline-block;
+}

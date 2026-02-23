@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Control Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{
+    font-family:'Inter',sans-serif;
+    background:#0b1220;
+    color:white;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    margin-bottom:30px;
+}
+
+.stats{
+    display:flex;
+    gap:30px;
+    margin-bottom:40px;
+}
+
+.card{
+    background:#1f2937;
+    padding:25px;
+    border-radius:20px;
+    flex:1;
+}
+
+.big{
+    font-size:28px;
+    font-weight:700;
+    margin-top:10px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#111827;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+th, td{
+    padding:14px;
+    text-align:left;
+    border-bottom:1px solid #1f2937;
+}
+
+select, input{
+    padding:6px;
+    border-radius:6px;
+    border:none;
+}
+
+button{
+    padding:6px 12px;
+    border-radius:8px;
+    border:none;
+    background:#00f2ff;
+    font-weight:600;
+}
+
+a{
+    color:#f87171;
+    text-decoration:none;
+}
+</style>
+</head>
+<body>
+
+<h1>Admin Control Center</h1>
+
+<div class="stats">
+    <div class="card">
+        Toplam Kullanıcı
+        <div class="big">{{ total_users }}</div>
+    </div>
+    <div class="card">
+        Toplam Sorgu
+        <div class="big">{{ total_queries }}</div>
+    </div>
+</div>
+
+<h2>Kullanıcı Yönetimi</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Kullanıcı</th>
+        <th>Rol</th>
+        <th>Limit</th>
+        <th>İşlem</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+
+        <td>
+            <form method="POST" action="/admin/update-role/{{ user.id }}">
+                <select name="role">
+                    <option value="user" {% if user.role=="user" %}selected{% endif %}>User</option>
+                    <option value="admin" {% if user.role=="admin" %}selected{% endif %}>Admin</option>
+                    <option value="premium" {% if user.role=="premium" %}selected{% endif %}>Premium</option>
+                </select>
+                <button type="submit">Kaydet</button>
+            </form>
+        </td>
+
+        <td>
+            <form method="POST" action="/admin/update-limit/{{ user.id }}">
+                Günlük:
+                <input type="number" name="daily_limit" value="{{ user.daily_limit }}" style="width:60px;">
+                Saatlik:
+                <input type="number" name="hourly_limit" value="{{ user.hourly_limit }}" style="width:60px;">
+                <button type="submit">Güncelle</button>
+            </form>
+        </td>
+
+        <td>
+            <a href="/admin/delete/{{ user.id }}">Sil</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br><br>
+<a href="/admin/logs" style="color:#00f2ff;">Son 100 Logu Gör</a>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Kayıt Ol</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{
+    font-family:'Inter',sans-serif;
+    background:#03060d;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.card{
+    background:#050a14;
+    padding:40px;
+    border-radius:20px;
+    width:350px;
+    border:1px solid #00f2ff33;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:12px;
+    border:1px solid #00f2ff44;
+    background:#02050a;
+    color:white;
+}
+button{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    background:#00f2ff;
+    font-weight:600;
+}
+.error{
+    color:#f87171;
+    margin-bottom:15px;
+}
+a{
+    color:#00f2ff;
+    text-decoration:none;
+    display:block;
+    margin-top:15px;
+    text-align:center;
+}
+/* Footer */
+.footer{
+    text-align:center;
+    margin-top:20px;
+    font-size:12px;
+    color:#94a3b8;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<h2>Kayıt Ol</h2>
+
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<div style="margin-bottom:20px;text-align:center;">
+    <a href="https://t.me/BigBossCyber"
+       target="_blank"
+       style="display:inline-block;
+              padding:10px 20px;
+              background:#0088cc;
+              color:white;
+              border-radius:20px;
+              text-decoration:none;">
+        📢 Telegram Kanalına Katıl
+    </a>
+	<a href="https://t.me/BigBossCyber_bot?start=register" target="_blank">
+    🤖 Telegram Botu Başlat
+</a>
+</div>
+
+<div style="margin-bottom:15px;">
+    <label style="font-size:14px;">
+        <input type="checkbox" name="joined" required>
+        Telegram kanalına katıldım
+    </label>
+</div>
+
+<form method="POST">
+
+    <input type="text" name="username" placeholder="Kullanıcı Adı" required>
+    <input type="password" name="password" placeholder="Şifre" required>
+    <input type="text" name="telegram" placeholder="Telegram @kullaniciadi" required>
+
+    <button type="submit">Hesap Oluştur</button>
+
+</form>
+
+<a href="{{ url_for('login') }}">Giriş Yap</a>
+
+<div class="footer">
+        BİGBOSS CYBER Panel
+    </div>
+</div>
+
+</body>
+</html>

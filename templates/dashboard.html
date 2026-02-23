@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Enterprise Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:'Inter',sans-serif;
+    background:#0b1220;
+    color:white;
+    display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:260px;
+    background:#111827;
+    height:100vh;
+    padding:30px;
+    border-right:1px solid #1f2937;
+}
+.logo{
+    font-weight:800;
+    font-size:20px;
+    margin-bottom:40px;
+    color:#00f2ff;
+}
+.sidebar a{
+    display:block;
+    padding:12px 16px;
+    border-radius:12px;
+    margin-bottom:8px;
+    text-decoration:none;
+    color:#9ca3af;
+}
+.sidebar a:hover{
+    background:#1f2937;
+    color:#fff;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:40px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    margin-bottom:40px;
+}
+
+.card{
+    background:#1f2937;
+    padding:25px;
+    border-radius:20px;
+    transition:0.3s;
+}
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card h3{
+    font-size:14px;
+    color:#9ca3af;
+}
+.card .big{
+    font-size:28px;
+    font-weight:700;
+}
+
+.progress{
+    height:8px;
+    background:#111;
+    border-radius:20px;
+    margin-top:10px;
+}
+.progress-inner{
+    height:100%;
+    background:linear-gradient(90deg,#00f2ff,#0ea5e9);
+    border-radius:20px;
+}
+
+/* PREMIUM */
+.premium-box{
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    padding:30px;
+    border-radius:20px;
+    margin-bottom:40px;
+}
+.premium-box h2{
+    margin-bottom:15px;
+}
+.button{
+    display:inline-block;
+    padding:12px 20px;
+    border-radius:30px;
+    background:#00f2ff;
+    color:black;
+    font-weight:700;
+    text-decoration:none;
+}
+
+/* CHART */
+.chart-box{
+    background:#1f2937;
+    padding:30px;
+    border-radius:20px;
+}
+</style>
+</head>
+<body>
+<body style="{% if user.role == 'premium' %}background:#111827;{% endif %}">
+
+<div class="sidebar">
+    <div class="logo">BİGBOSS</div>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/user">Sorgu Portalı</a>
+    <a href="/logout">Çıkış</a>
+</div>
+
+<div class="main">
+
+    <div class="topbar">
+        <div>
+            <h1>
+Hoşgeldin {{ user.username }}
+{% if user.role == "premium" %}
+<span style="background:#22c55e;padding:5px 10px;border-radius:12px;font-size:12px;">PREMIUM</span>
+{% endif %}
+</h1>
+            <p>Rol: {{ user.role }}</p>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Bugünkü Sorgular</h3>
+            <div class="big">{{ today_count }} / {{ daily_limit }}</div>
+            <div class="progress">
+                <div class="progress-inner" style="width: {{ percent }}%;"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Kullanım Oranı</h3>
+            <div class="big">%{{ percent }}</div>
+        </div>
+
+        <div class="card">
+            <h3>Toplam Sorgu</h3>
+            <div class="big">{{ total_queries }}</div>
+        </div>
+
+        <div class="card">
+            <h3>Sistem</h3>
+            <div class="big" style="color:#22c55e;">ONLINE</div>
+        </div>
+    </div>
+
+    {% if user.role == "user" %}
+<div class="premium-box">
+    <h2>Premium’a Geç</h2>
+    <p>Limitsiz sorgu ve öncelikli erişim kazanın.</p>
+    <a href="/premium" class="button">
+        30 Gün Premium Al
+    </a>
+</div>
+{% elif user.role == "premium" %}
+<div class="premium-box" style="border:1px solid #22c55e;">
+    <h2>Premium Aktif</h2>
+    <p>Bitiş Tarihi: {{ user.premium_until }}</p>
+</div>
+{% endif %}
+
+{% if user.role == "premium" %}
+<div class="card" style="border:1px solid #22c55e;">
+<h3>Premium Plan</h3>
+<div class="big">{{ user.plan|capitalize }}</div>
+<p>Kalan Gün: {{ remaining_days }}</p>
+</div>
+{% endif %}
+
+    <!-- CHART -->
+    <div class="chart-box">
+        <h2>Son 7 Gün Aktivite</h2>
+        <canvas id="usageChart"></canvas>
+    </div>
+
+</div>
+
+<script>
+const ctx = document.getElementById('usageChart');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ chart_labels|tojson }},
+        datasets: [{
+            label: 'Sorgu Sayısı',
+            data: {{ chart_data|tojson }},
+            borderColor: '#00f2ff',
+            backgroundColor: 'rgba(0,242,255,0.1)',
+            tension: 0.3,
+            fill: true
+        }]
+    },
+    options: {
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

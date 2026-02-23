@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BİGBOSS CYBER | Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:#03060d;
+    color:#e2e8f0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* Terminal background */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle at top left,#00f2ff22,transparent 60%);
+    z-index:-1;
+}
+
+/* Grid background */
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(0,242,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,242,255,0.05) 1px, transparent 1px);
+    background-size:60px 60px;
+    z-index:-2;
+}
+
+/* Login Card */
+.login-card{
+    width:100%;
+    max-width:420px;
+    background:#050a14;
+    border:1px solid #00f2ff33;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 0 25px #00f2ff22;
+    backdrop-filter:blur(10px);
+}
+
+/* Title */
+.title{
+    font-family:'Orbitron',sans-serif;
+    font-size:26px;
+    text-align:center;
+    color:#00f2ff;
+    text-shadow:0 0 10px #00f2ff;
+    margin-bottom:35px;
+}
+
+/* Glitch */
+.glitch{
+    position:relative;
+}
+.glitch::before,
+.glitch::after{
+    content:attr(data-text);
+    position:absolute;
+    left:0;
+}
+.glitch::before{
+    animation:glitchTop 1s infinite linear alternate-reverse;
+    color:#ff004c;
+}
+.glitch::after{
+    animation:glitchBottom 1s infinite linear alternate-reverse;
+    color:#00f2ff;
+}
+
+@keyframes glitchTop{
+    0%{clip-path:inset(0 0 80% 0);}
+    100%{clip-path:inset(0 0 60% 0);}
+}
+@keyframes glitchBottom{
+    0%{clip-path:inset(60% 0 0 0);}
+    100%{clip-path:inset(80% 0 0 0);}
+}
+
+/* Inputs */
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px;
+    border-radius:20px;
+    border:1px solid #00f2ff44;
+    background:#02050a;
+    color:white;
+    outline:none;
+    transition:0.3s;
+}
+
+.input-group input:focus{
+    border-color:#00f2ff;
+    box-shadow:0 0 10px #00f2ff55;
+}
+
+/* Button */
+.login-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:20px;
+    background:#00f2ff;
+    color:#000;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 0 15px #00f2ff;
+    transition:0.3s;
+}
+
+.login-btn:hover{
+    box-shadow:0 0 25px #00f2ff;
+}
+
+/* Footer */
+.footer{
+    text-align:center;
+    margin-top:20px;
+    font-size:12px;
+    color:#94a3b8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <div class="title glitch" data-text="BİGBOSS CYBER">
+        BİGBOSS CYBER
+    </div>
+
+    <form method="POST">
+
+        <div class="input-group">
+            <input type="text" name="username" placeholder="Kullanıcı Adı" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" name="password" placeholder="Şifre" required>
+        </div>
+
+        <button type="submit" class="login-btn">
+            SİSTEME GİRİŞ
+        </button>
+
+    </form>
+	
+	<div style="text-align:center;margin-top:15px;">
+    <a href="{{ url_for('register') }}" 
+       style="color:#00f2ff;text-decoration:none;">
+       Hesabın yok mu? Kayıt Ol
+    </a>
+</div>
+
+    <div class="footer">
+        BİGBOSS CYBER Panel
+    </div>
+
+</div>
+
+</body>
+</html>

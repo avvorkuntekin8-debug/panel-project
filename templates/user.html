@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BİGBOSS CYBER</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:#03060d;
+    color:#e2e8f0;
+    overflow-x:hidden;
+}
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle at top left,#00f2ff22,transparent 60%);
+    z-index:-1;
+}
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(0,242,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,242,255,0.05) 1px, transparent 1px);
+    background-size:60px 60px;
+    z-index:-2;
+}
+
+.wrapper{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:60px 20px;
+}
+
+.enterprise-bar{
+    width:100%;
+    max-width:1100px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 25px;
+    margin-bottom:35px;
+    border-radius:20px;
+    backdrop-filter:blur(12px);
+    background:rgba(5,10,20,0.6);
+    border:1px solid rgba(0,242,255,0.15);
+}
+
+.badge{
+    background:linear-gradient(90deg,#00f2ff,#0ea5e9);
+    color:black;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+}
+
+.logout-btn{
+    padding:8px 16px;
+    border-radius:20px;
+    background:#00f2ff;
+    color:black;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.dashboard-cards{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:40px;
+}
+
+.dash-card{
+    background:#050a14;
+    padding:20px;
+    border-radius:15px;
+    border:1px solid #00f2ff22;
+}
+
+.dash-card span{
+    font-size:12px;
+    color:#94a3b8;
+    display:block;
+}
+
+.dash-card strong{
+    font-size:18px;
+    color:#00f2ff;
+}
+
+.title{
+    font-family:'Orbitron',sans-serif;
+    font-size:28px;
+    color:#00f2ff;
+    margin-bottom:30px;
+}
+
+.search-panel{
+    width:100%;
+    max-width:950px;
+    background:#050a14;
+    border:1px solid #00f2ff33;
+    padding:30px;
+    border-radius:20px;
+}
+
+.type-selector{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:20px;
+}
+
+.type-selector button{
+    padding:8px 16px;
+    border-radius:20px;
+    border:1px solid #00f2ff44;
+    background:#050a14;
+    color:#94a3b8;
+    cursor:pointer;
+}
+
+.type-selector button.active{
+    background:#00f2ff;
+    color:#000;
+}
+
+.search-row{
+    display:flex;
+    gap:10px;
+}
+
+.search-row input{
+    flex:1;
+    padding:14px;
+    border-radius:20px;
+    border:1px solid #00f2ff44;
+    background:#02050a;
+    color:white;
+}
+
+.search-row button{
+    padding:14px 25px;
+    border:none;
+    border-radius:20px;
+    background:#00f2ff;
+    color:#000;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.results{
+    margin-top:40px;
+    width:100%;
+    max-width:1100px;
+}
+
+.card{
+    background:#050a14;
+    border:1px solid #00f2ff22;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+}
+
+.data{
+    background:#02050a;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #00f2ff22;
+}
+
+.clickable-tc{
+    color:#00f2ff;
+    cursor:pointer;
+}
+
+.enterprise-back{
+    padding:8px 18px;
+    border-radius:25px;
+    border:1px solid #00f2ff55;
+    background:rgba(0,242,255,0.1);
+    color:#00f2ff;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<div class="enterprise-bar">
+    <div>
+        <span class="badge">ENTERPRISE</span>
+        {{ user.username }} • {{ user.role }}
+    </div>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Çıkış</a>
+</div>
+
+<div class="dashboard-cards">
+    <div class="dash-card">
+        <span>Hesap Türü</span>
+        <strong>{{ user.role }}</strong>
+    </div>
+	
+	
+
+    <div class="dash-card">
+        <span>Bugünkü Sorgular</span>
+        <strong>{{ today_count }} / {{ daily_limit }}</strong>
+
+        <div style="margin-top:10px;height:6px;background:#111;border-radius:6px;">
+            <div style="
+                height:100%;
+                width: {{ (today_count / daily_limit * 100) if daily_limit else 0 }}%;
+                background:#00f2ff;
+                border-radius:6px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="title">BİGBOSS CYBER</div>
+
+<div class="search-panel">
+<div class="type-selector">
+<button class="active" onclick="selectType('tc',this)">TC</button>
+<button onclick="selectType('gsm',this)">GSM</button>
+<button onclick="selectType('adsoyad',this)">Ad Soyad</button>
+<button onclick="selectType('adres',this)">Adres</button>
+<button onclick="selectType('family',this)">Sülale</button>
+</div>
+
+<div class="search-row">
+<input type="text" id="queryInput" placeholder="Veri giriniz...">
+<button onclick="runQuery()">EXECUTE</button>
+</div>
+</div>
+
+<div class="results" id="results"></div>
+
+</div>
+
+<script>
+
+let currentType="tc";
+window.currentPage = 1;
+
+function selectType(type,el){
+    currentType=type;
+    document.querySelectorAll(".type-selector button").forEach(b=>b.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function toggleSection(el){
+    const content=el.nextElementSibling;
+    if(content){
+        content.style.display=content.style.display==="none"?"block":"none";
+    }
+}
+
+function safeList(list){
+    return Array.isArray(list) ? list : [];
+}
+
+function runQuery(){
+
+    const val=document.getElementById("queryInput").value.trim();
+    const results=document.getElementById("results");
+
+    if(!val){ alert("Veri giriniz"); return; }
+
+    results.innerHTML=`
+    <div class="card">
+        <div class="terminal-loading">[BİGBOSS CORE] Veri çekiliyor...</div>
+        <div class="loading-bar">
+            <div class="loading-bar-inner"></div>
+        </div>
+    </div>`;
+
+    let url="";
+    if(currentType==="gsm"){
+        url=`/search-gsm?q=${encodeURIComponent(val)}`;
+    }
+    else if(currentType==="adsoyad"){
+        url=`/search-name?q=${encodeURIComponent(val)}&page=${window.currentPage}`;
+    }
+    else if(currentType==="family"){
+        url=`/search-family?q=${encodeURIComponent(val)}`;
+    }
+    else if(currentType==="adres"){
+        url=`/search-address?q=${encodeURIComponent(val)}`;
+    }
+    else{
+        url=`/search?type=${currentType}&q=${encodeURIComponent(val)}`;
+    }
+
+    fetch(url)
+    .then(res=>res.json())
+    .then(data=>{
+
+        if(data.error==="limit"){
+            results.innerHTML=`
+            <div class="card">
+                <h2 style="color:#f87171">Günlük sorgu limitine ulaştınız</h2>
+            </div>`;
+            return;
+        }
+
+        /* ================= GSM ================= */
+        if(currentType==="gsm"){
+
+            const list = safeList(data.results);
+
+            if(list.length===0){
+                results.innerHTML="<div class='card'>Sonuç bulunamadı</div>";
+                return;
+            }
+
+            let html=`<div class="card">
+                <h2>GSM Sonuçları (${list.length})</h2>
+                <div class="grid">`;
+
+            list.forEach(r=>{
+                html+=`
+                <div class="data">
+                    <span>TC</span>
+                    <strong class="clickable-tc"
+                        onclick="loadName('${r.TC}')">
+                        ${r.TC}
+                    </strong>
+                </div>`;
+            });
+
+            html+=`</div></div>`;
+            results.innerHTML=html;
+            window.lastGsmList=html;
+            return;
+        }
+
+        /* ================= AD SOYAD ================= */
+        if(currentType==="adsoyad"){
+
+    const list = safeList(data.results);
+
+    if(list.length===0){
+        results.innerHTML="<div class='card'>Sonuç bulunamadı</div>";
+        return;
+    }
+
+    function similarityScore(name){
+        const search = val.toUpperCase();
+        let score = 0;
+        if(name.includes(search)) score += 60;
+        if(name.startsWith(search.split(" ")[0])) score += 20;
+        return Math.min(score,100);
+    }
+
+    let html=`<div class="card">
+        <h2>Sonuçlar (${data.total||list.length})</h2>
+        <div class="grid">`;
+
+    list.forEach(r=>{
+        const fullName = `${r.ADI} ${r.SOYADI}`;
+        const score = similarityScore(fullName);
+
+        html+=`
+        <div class="data">
+            <strong style="cursor:pointer;color:#00f2ff"
+                onclick="autoTC('${r.TC}')">
+                ${fullName}
+            </strong>
+            <span>TC: ${r.TC}</span>
+            <span>İl: ${r.NUFUSIL||"-"}</span>
+            <span>İlçe: ${r.NUFUSILCE||"-"}</span>
+
+            <div style="margin-top:6px;height:6px;background:#111;border-radius:4px;">
+                <div style="height:100%;width:${score}%;
+                    background:${score>70?'#00f2ff':'#f59e0b'};
+                    border-radius:4px;"></div>
+            </div>
+        </div>`;
+    });
+
+    html+=`</div>`;  // grid kapandı
+
+    /* ================= PAGINATION ================= */
+
+    html+=`<div style="margin-top:25px;text-align:center;">`;
+
+    if(data.has_prev){
+        html+=`
+        <button onclick="changePage(${data.prev_page})"
+            style="padding:8px 16px;border-radius:20px;
+            border:1px solid #00f2ff44;background:#050a14;
+            color:#00f2ff;margin-right:10px;cursor:pointer;">
+            ⬅ Önceki
+        </button>`;
+    }
+
+    html+=`
+        <span style="margin:0 15px;color:#94a3b8;">
+            Sayfa ${data.page} / ${data.total_pages}
+        </span>
+    `;
+
+    if(data.has_next){
+        html+=`
+        <button onclick="changePage(${data.next_page})"
+            style="padding:8px 16px;border-radius:20px;
+            border:none;background:#00f2ff;color:#000;
+            font-weight:600;cursor:pointer;">
+            Sonraki ➡
+        </button>`;
+    }
+
+    html+=`</div></div>`;  // card kapandı
+
+    results.innerHTML=html;
+    return;
+}
+		
+
+        /* ================= ADRES ================= */
+        if(currentType==="adres"){
+
+            const list = safeList(data.results);
+
+            if(list.length===0){
+                results.innerHTML="<div class='card'>Adres bulunamadı</div>";
+                return;
+            }
+
+            const item=list[0];
+
+            let html=`<div class="card"><h2>Adres Geçmişi</h2>`;
+
+            ["2024","2023","2017","2015","2009"].forEach(year=>{
+                if(item["ADRES"+year]){
+                    html+=`
+                    <div class="data">
+                        <span>${year}</span>
+                        <strong>${item["ADRES"+year]}</strong>
+                    </div>`;
+                }
+            });
+
+            html+="</div>";
+            results.innerHTML=html;
+            return;
+        }
+		
+		if(data.error === "daily"){
+    results.innerHTML = `
+    <div class="card">
+        <h2 style="color:#f87171">Günlük limit doldu</h2>
+        <p>Premium üyeliğe geçerek limitsiz sorgu yapabilirsiniz.</p>
+        <button class="enterprise-back">Premium'a Geç</button>
+    </div>`;
+    return;
+}
+
+if(data.error === "hourly"){
+    results.innerHTML = `
+    <div class="card">
+        <h2 style="color:#f59e0b">Saatlik limit doldu</h2>
+        <p>1 saat sonra tekrar deneyin.</p>
+    </div>`;
+    return;
+}
+
+        /* ================= SÜLALE FULL ================= */
+        if(currentType==="family"){
+
+            if(!data.person){
+                results.innerHTML="<div class='card'>Bulunamadı</div>";
+                return;
+            }
+
+            const parents = safeList(data.parents);
+            const siblings = safeList(data.siblings);
+            const children = safeList(data.children);
+            const paternal = safeList(data.paternal_relatives);
+            const maternal = safeList(data.maternal_relatives);
+            const cousins1 = safeList(data.paternal_cousins);
+            const cousins2 = safeList(data.maternal_cousins);
+
+            function section(title,list){
+                if(list.length===0) return "";
+                let html=`<div class="card">
+                    <div class="section-title"
+                        onclick="toggleSection(this)">
+                        ${title} (${list.length})
+                    </div>
+                    <div>`;
+                list.forEach(p=>{
+                    html+=`
+                    <div class="data">
+                        <strong>${p.AD} ${p.SOYAD}</strong>
+                        <span>${p.TC}</span>
+                    </div>`;
+                });
+                html+="</div></div>";
+                return html;
+            }
+
+            let html=`<div class="card">
+                <h2>${data.person.AD} ${data.person.SOYAD}</h2>
+                <div class="data">
+                    <span>TC</span>
+                    <strong>${data.person.TC}</strong>
+                </div>
+            </div>`;
+
+            html+=section("Anne / Baba",parents);
+            html+=section("Kardeşler",siblings);
+            html+=section("Çocuklar",children);
+            html+=section("Amca / Hala",paternal);
+            html+=section("Dayı / Teyze",maternal);
+            html+=section("Kuzenler (Baba)",cousins1);
+            html+=section("Kuzenler (Anne)",cousins2);
+
+            results.innerHTML=html;
+            return;
+        }
+
+        /* ================= TC FULL DETAIL ================= */
+
+        const list = safeList(data.results);
+
+        if(list.length===0){
+            results.innerHTML="<div class='card'>Sonuç bulunamadı</div>";
+            return;
+        }
+
+        const item=list[0];
+
+        results.innerHTML=`
+        <div class="card">
+            <h2 class="glitch"
+                data-text="${item.AD||""} ${item.SOYAD||""}">
+                ${item.AD||""} ${item.SOYAD||""}
+            </h2>
+
+            <div class="grid">
+                <div class="data"><span>TC</span><strong>${item.TC||"-"}</strong></div>
+                <div class="data"><span>Cinsiyet</span><strong>${item.CINSIYET||"-"}</strong></div>
+                <div class="data"><span>Medeni Hal</span><strong>${item.MEDENIHAL||"-"}</strong></div>
+                <div class="data"><span>GSM</span><strong>${item.GSM||"-"}</strong></div>
+                <div class="data"><span>İl</span><strong>${item.ADRESIL||"-"}</strong></div>
+                <div class="data"><span>İlçe</span><strong>${item.ADRESILCE||"-"}</strong></div>
+                <div class="data"><span>Baba</span><strong>${item.BABAADI||"-"}</strong></div>
+                <div class="data"><span>Anne</span><strong>${item.ANNEADI||"-"}</strong></div>
+            </div>
+        </div>`;
+    })
+    .catch(()=>{
+        results.innerHTML="<div class='card'>Sunucu hatası</div>";
+    });
+}
+
+function changePage(p){
+    window.currentPage = p;
+    runQuery();
+}
+
+function autoTC(tc){
+    document.getElementById("queryInput").value = tc;
+    currentType="tc";
+    runQuery();
+}
+
+function loadName(tc){
+    fetch(`/search-tc-name?tc=${tc}`)
+    .then(res=>res.json())
+    .then(data=>{
+        if(!data.results) return;
+        const p=data.results[0];
+
+        document.getElementById("results").innerHTML=`
+        <div class="card">
+            <button class="enterprise-back"
+                onclick="goBackGsm()">⬅ GSM Listesine Dön</button>
+            <h2>${p.AD} ${p.SOYAD}</h2>
+            <div class="data"><strong>${tc}</strong></div>
+        </div>`;
+    });
+}
+
+function goBackGsm(){
+    if(window.lastGsmList){
+        document.getElementById("results").innerHTML=window.lastGsmList;
+    }
+}
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kripto Ödeme</title>
+<style>
+body{
+    background:#0b1220;
+    font-family:Inter;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.card{
+    background:#111827;
+    padding:40px;
+    border-radius:20px;
+    width:500px;
+    text-align:center;
+}
+.wallet{
+    background:#1f2937;
+    padding:15px;
+    border-radius:10px;
+    margin:20px 0;
+    word-break:break-all;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border-radius:10px;
+    border:none;
+    background:#1f2937;
+    color:white;
+}
+button{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#22c55e;
+    font-weight:bold;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Kripto Ödeme</h2>
+    <div>Plan: {{ plan|capitalize }}</div>
+	<h2>İsim Soyisim Yazmayı Unutmayın</h2>
+
+    <div class="wallet">
+        {{ wallet }}
+    </div>
+
+    <form method="POST" action="/submit-payment">
+        <input type="hidden" name="plan" value="{{ plan }}">
+        <input type="hidden" name="method" value="crypto">
+
+        <input type="text" name="txid" placeholder="Transaction Hash" required>
+        <button type="submit">Ödeme Bildir</button>
+    </form>
+</div>
+
+</body>
+</html>
