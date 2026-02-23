@@ -13,10 +13,10 @@ import os
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "fallback")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SESSION_COOKIE_SECURE"] = False
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "super-secret-key")
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_SAMESITE'] = "Lax"
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 db.init_app(app)
 
@@ -91,6 +91,11 @@ def load_user(user_id):
 @app.route("/")
 def home():
     return redirect(url_for("login"))
+    
+@app.route("/init-db")
+def init_db():
+    db.create_all()
+    return "Database initialized"   
 
 # =========================================================
 # LOGIN
@@ -104,12 +109,14 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        print("LOGIN DENENDİ:", username)
-
         user = User.query.filter_by(username=username).first()
 
         if user and user.password == password:
-            login_user(user)
+            login_user(user, remember=True)
+
+            next_page = request.args.get("next")
+            if next_page:
+                return redirect(next_page)
 
             if user.role == "admin":
                 return redirect(url_for("admin_dashboard"))
@@ -210,6 +217,8 @@ def admin_dashboard():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    
+    print("CURRENT USER:", current_user.is_authenticated)
 
     today = datetime.now().date()
 
