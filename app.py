@@ -68,6 +68,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+@app.route("/init-db")
+def init_db():
+    db.create_all()
+    return "Database initialized"
+
 @app.before_request
 def check_premium_expiry():
 
