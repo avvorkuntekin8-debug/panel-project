@@ -140,7 +140,73 @@ def admin_dashboard():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return "Dashboard OK"
+
+    today = datetime.now().date()
+
+    try:
+        today_count = db.session.execute(text("""
+            SELECT COUNT(*)
+            FROM query_log
+            WHERE user_id = :uid
+            AND DATE(created_at) = :today
+        """), {
+            "uid": current_user.id,
+            "today": today
+        }).scalar() or 0
+
+        total_queries = db.session.execute(text("""
+            SELECT COUNT(*)
+            FROM query_log
+            WHERE user_id = :uid
+        """), {
+            "uid": current_user.id
+        }).scalar() or 0
+
+    except:
+        today_count = 0
+        total_queries = 0
+
+    daily_limit = current_user.daily_limit or 1
+    percent = int((today_count / daily_limit) * 100) if daily_limit else 0
+
+    # Grafik için son 7 gün
+    labels = []
+    data = []
+
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+
+        try:
+            count = db.session.execute(text("""
+                SELECT COUNT(*)
+                FROM query_log
+                WHERE user_id = :uid
+                AND DATE(created_at) = :day
+            """), {
+                "uid": current_user.id,
+                "day": day
+            }).scalar() or 0
+        except:
+            count = 0
+
+        labels.append(day.strftime("%d.%m"))
+        data.append(count)
+
+    remaining_days = 0
+    if current_user.premium_until:
+        remaining_days = (current_user.premium_until - datetime.now()).days
+
+    return render_template(
+        "dashboard.html",
+        user=current_user,
+        today_count=today_count,
+        daily_limit=daily_limit,
+        percent=percent,
+        total_queries=total_queries,
+        remaining_days=remaining_days,
+        chart_labels=labels,
+        chart_data=data
+    )
 
 # =========================================================
 # LOGOUT
