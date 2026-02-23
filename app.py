@@ -9,6 +9,11 @@ from collections import defaultdict
 from flask import request, redirect, url_for
 import os
 
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(BASE_DIR, "database.db")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 def send_admin_message(user_id, username, plan):
 
     bot_token = "8596108342:AAGZaHxY0iIPE-U4jitnNk3Lipjj4Qpm_CM"
@@ -837,7 +842,25 @@ Bilgi: {proof}
 
 @app.route("/admin/reject/<int:user_id>")
 def admin_reject(user_id):
-    return "Rejected"    
+    return "Rejected"   
+
+@app.route("/create-admin")
+def create_admin():
+    from models import User
+    from app import db
+
+    user = User(
+        username="admin",
+        password="1234",
+        role="admin",
+        daily_limit=99999,
+        hourly_limit=9999
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    return "Admin created"    
 
 @app.route("/dashboard")
 @login_required
@@ -932,9 +955,15 @@ def user_dashboard():
         daily_limit=daily_limit,
         percent=percent
     )
-
+    
+  with app.app_context():
+    db.drop_all()
+    db.create_all()
+ 
 # =========================================================
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run()
+    
+    
