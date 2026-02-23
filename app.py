@@ -115,7 +115,7 @@ def login():
 
         return render_template("login.html", error="Hatalı giriş")
 
-    return render_template("login.html"))
+    return render_template("login.html")
     
     
 
