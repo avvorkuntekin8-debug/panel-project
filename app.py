@@ -141,19 +141,16 @@ def admin_dashboard():
 @login_required
 def dashboard():
 
-    today = datetime.now().date()
-
-    today_count = 0
-
-    daily_limit = current_user.daily_limit or 1
-    percent = int((today_count / daily_limit) * 100)
-
     return render_template(
         "dashboard.html",
         user=current_user,
-        today_count=today_count,
-        daily_limit=daily_limit,
-        percent=percent
+        today_count=0,
+        daily_limit=current_user.daily_limit or 50,
+        percent=0,
+        total_queries=0,
+        remaining_days=0,
+        chart_labels=[],
+        chart_data=[]
     )
 
 # =========================================================
