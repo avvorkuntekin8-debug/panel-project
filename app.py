@@ -22,6 +22,11 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+    
+@app.route("/init-db")
+def init_db():
+    db.create_all()
+    return "Database initialized"     
 
 # =========================================================
 # LOGIN MANAGER
@@ -92,11 +97,7 @@ def load_user(user_id):
 def home():
     return redirect(url_for("login"))
     
-@app.route("/init-db")
-def init_db():
-    db.create_all()
-    return "Database initialized"   
-
+ 
 # =========================================================
 # LOGIN
 # =========================================================
